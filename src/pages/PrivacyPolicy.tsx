@@ -142,7 +142,7 @@ const PrivacyPolicy = () => {
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="space-y-2 text-gray-700">
                   <p><strong>개인정보보호책임자:</strong> 지식 플레이스 관리자</p>
-                  <p><strong>연락처:</strong> privacy@knowledgeplace.com</p>
+                  <p><strong>연락처:</strong> am2869@naver.com</p>
                   <p><strong>처리방침 변경:</strong> 본 방침은 시행일로부터 적용되며, 법령 및 방침에 따른 변경내용의 추가, 삭제 및 정정이 있는 경우에는 변경사항의 시행 7일 전부터 공지사항을 통하여 고지할 것입니다.</p>
                 </div>
               </div>
