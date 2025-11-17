@@ -137,7 +137,7 @@ const App = () => {
           </CardContent>
         </Card>
 
-        {/* 개발팀 소개 - 사용자 요청 반영 완료 */}
+        {/* 개발팀 소개 - 중복 제거 완료 */}
         <Card className="bg-white/90 backdrop-blur-sm mb-6 border border-gray-100">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
