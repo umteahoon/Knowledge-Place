@@ -1,91 +1,22 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Users, Target, Lightbulb, Mail, Github, Globe, Award, Home } from 'lucide-react';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, Users, Target, Lightbulb, Mail, Github, Globe, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-// 단일 파일 환경에서 실행 가능하도록 shadcn/ui 컴포넌트 및 router를 간단히 Mocking합니다.
+const About = () => {
+  const navigate = useNavigate();
 
-// Mock Components for Shadcn/ui (Tailwind CSS 기반)
-const Card = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl ${className}`}>
-    {children}
-  </div>
-);
-const CardHeader = ({ children, className = "" }) => (
-  <div className={`p-6 border-b border-gray-100 ${className}`}>
-    {children}
-  </div>
-);
-const CardTitle = ({ children, className = "" }) => (
-  <h2 className={`text-xl font-semibold ${className}`}>
-    {children}
-  </h2>
-);
-const CardContent = ({ children, className = "" }) => (
-  <div className={`p-6 ${className}`}>
-    {children}
-  </div>
-);
-const Button = ({ children, onClick, variant = "default", className = "" }) => {
-  let style = "px-4 py-2 rounded-lg font-medium transition-colors duration-200 transform active:scale-95";
-  if (variant === "outline") style += " border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 shadow-sm";
-  else style += " bg-blue-600 text-white hover:bg-blue-700 shadow-md";
-  return <button className={`${style} ${className}`} onClick={onClick}>{children}</button>;
-};
-const Badge = ({ children, variant = "default" }) => {
-    let style = "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
-    if (variant === "secondary") style += " bg-gray-100 text-gray-800";
-    else if (variant === "outline") style += " border border-gray-300 text-gray-700";
-    else style += " bg-purple-500 text-white";
-    return <span className={style}>{children}</span>;
-};
-
-// 메인 페이지 시뮬레이션 컴포넌트
-const MainPage = ({ onNavigateToAbout }) => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 font-sans antialiased">
-    <Card className="max-w-xl w-full text-center p-10 bg-white border border-gray-200">
-      <Home className="mx-auto text-blue-500 mb-4" size={48} />
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
-        지식 플레이스 메인 페이지
-      </h1>
-      <p className="text-lg text-gray-600 mb-8">
-        실제 환경에서는 여기에 게임 목록, 대시보드 등의 메인 콘텐츠가 표시됩니다.
-      </p>
-      <Button onClick={onNavigateToAbout} className="bg-purple-600 hover:bg-purple-700">
-        About & Contact 페이지로 돌아가기
-      </Button>
-    </Card>
-  </div>
-);
-
-
-const App = () => {
-  // 현재 화면 상태를 관리 (About 또는 Main)
-  const [currentView, setCurrentView] = useState('About');
-
-  // Main 페이지로 이동 (시뮬레이션)
-  const handleNavigateBack = () => {
-    setCurrentView('Main');
-    console.log("메인 페이지로 이동 (시뮬레이션)");
-  }
-
-  // About 페이지로 이동 (Main에서 호출됨)
-  const handleNavigateToAbout = () => {
-    setCurrentView('About');
-  }
-
-  if (currentView === 'Main') {
-    return <MainPage onNavigateToAbout={handleNavigateToAbout} />;
-  }
-
-  // About 페이지 렌더링
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-4 font-sans antialiased">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
-          <Button variant="outline" onClick={handleNavigateBack} className="shadow-md">
+          <Button variant="outline" onClick={() => navigate('/')}>
             <ArrowLeft size={16} className="mr-2" />
             메인으로
           </Button>
-          <h1 className="text-3xl font-extrabold text-gray-900 flex items-center gap-2">
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
             <Users className="text-purple-600" />
             About & Contact
           </h1>
