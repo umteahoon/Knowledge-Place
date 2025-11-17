@@ -84,6 +84,46 @@ const About = () => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-800">지식 플레이스 개발팀</h3>
                 <p className="text-gray-600">Educational Technology Specialists</p>
+                <Card className="bg-white/90 backdrop-blur-sm mb-6 border border-gray-100">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Users className="text-blue-500" />
+              개발팀 소개
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
+              <div className="text-center mb-6">
+                <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                  KP
+                </div>
+                <h3 className="text-xl font-bold text-gray-800">지식 플레이스 개발팀 </h3>
+                {/* 사용자 요청에 따라 역할 및 이름 추가 */}
+                <p className="text-base font-semibold text-blue-700 mt-3">대표: 엄태훈</p>
+                <p className="text-sm text-gray-600">개발자: 엄태훈, 손우혁</p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-4 text-center">
+                <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <Globe className="mx-auto mb-2 text-green-500" size={24} />
+                  <h4 className="font-semibold">웹 개발</h4>
+                  <p className="text-sm text-gray-600">React, TypeScript, Tailwind CSS</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <Target className="mx-auto mb-2 text-red-500" size={24} />
+                  <h4 className="font-semibold">게임 디자인</h4>
+                  <p className="text-sm text-gray-600">교육학적 게임화 설계</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                  <Lightbulb className="mx-auto mb-2 text-yellow-500" size={24} />
+                  <h4 className="font-semibold">콘텐츠 기획</h4>
+                  <p className="text-sm text-gray-600">교과과정 연계 문제 개발</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
               </div>
               
               <div className="grid md:grid-cols-3 gap-4 text-center">
