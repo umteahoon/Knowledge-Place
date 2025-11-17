@@ -156,10 +156,10 @@ const About = () => {
                 <div>
                   <h3 className="font-semibold mb-3 text-gray-800">📧 이메일 문의</h3>
                   <div className="space-y-2 text-gray-700">
-                    <p><strong>일반 문의:</strong> info@knowledgeplace.com</p>
-                    <p><strong>기술 지원:</strong> support@knowledgeplace.com</p>
-                    <p><strong>개인정보 관련:</strong> privacy@knowledgeplace.com</p>
-                    <p><strong>사업 제휴:</strong> business@knowledgeplace.com</p>
+                    <p><strong>일반 문의:</strong> am2869@naver.com</p>
+                    <p><strong>기술 지원:</strong> am2869@naver.com</p>
+                    <p><strong>개인정보 관련:</strong> am2869@naver.com</p>
+                    <p><strong>사업 제휴:</strong> am2869@naver.com</p>
                   </div>
                 </div>
                 
