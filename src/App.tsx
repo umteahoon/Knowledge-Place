@@ -54,12 +54,12 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
             
-            {/* 광고 쿠키 동의 시 광고 표시 */}
-            {cookieConsent?.advertising && (
+            {/* 광고 쿠키 동의 시 광고 표시 - AdSense 승인 후 활성화 */}
+            {/* {cookieConsent?.advertising && (
               <div className="fixed bottom-4 right-4 z-40">
-                <ResponsiveAd adSlot="YOUR_AD_SLOT_ID" className="w-80 h-60 bg-gray-100 rounded-lg" />
+                <ResponsiveAd adSlot="YOUR_ACTUAL_AD_SLOT_ID" className="w-80 h-60 bg-gray-100 rounded-lg" />
               </div>
-            )}
+            )} */}
             
             {/* 쿠키 동의 배너 */}
             <CookieConsent />
