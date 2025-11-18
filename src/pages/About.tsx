@@ -68,6 +68,67 @@ const About = () => {
           </CardContent>
         </Card>
 
+        {/* 4가지 게임 모드 상세 설명 */}
+        <Card className="bg-white/90 backdrop-blur-sm mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Target className="text-green-500" />
+              4가지 게임 모드
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* 스피드 퀴즈 */}
+              <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+                <h4 className="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                  ⚡ 스피드 퀴즈
+                </h4>
+                <ul className="space-y-1 text-gray-700 text-sm">
+                  <li>• 60초 시간 제한</li>
+                  <li>• 빠른 정답 시 보너스 점수</li>
+                  <li>• 연속 정답 시 추가 보너스</li>
+                </ul>
+              </div>
+
+              {/* 서바이벌 모드 */}
+              <div className="bg-red-50 p-4 rounded-lg border-l-4 border-red-400">
+                <h4 className="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                  💪 서바이벌 모드
+                </h4>
+                <ul className="space-y-1 text-gray-700 text-sm">
+                  <li>• 3개의 생명으로 시작</li>
+                  <li>• 틀릴 때마다 생명 감소</li>
+                  <li>• 무한 도전 가능</li>
+                </ul>
+              </div>
+
+              {/* 연습 모드 */}
+              <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                <h4 className="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                  📖 연습 모드
+                </h4>
+                <ul className="space-y-1 text-gray-700 text-sm">
+                  <li>• 시간 제한 없음</li>
+                  <li>• 상세한 해설 제공</li>
+                  <li>• 이전 문제 복습 가능</li>
+                </ul>
+              </div>
+
+              {/* 도전 모드 */}
+              <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400">
+                <h4 className="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                  🎯 도전 모드
+                </h4>
+                <ul className="space-y-1 text-gray-700 text-sm">
+                  <li>• 어려운 문제 10개 선별</li>
+                  <li>• 문제당 30초 제한</li>
+                  <li>• 시간 보너스 및 등급 시스템</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* 개발팀 소개 */}
         <Card className="bg-white/90 backdrop-blur-sm mb-6">
           <CardHeader>

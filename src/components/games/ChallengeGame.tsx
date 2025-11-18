@@ -29,25 +29,17 @@ export const ChallengeGame: React.FC<ChallengeGameProps> = ({ subject, onGameEnd
   const [challengeQuestions, setChallengeQuestions] = useState<Question[]>([]);
   const [timeBonus, setTimeBonus] = useState(0);
 
-  // 게임 초기화 - 어려운 문제들만 선별
+  // 게임 초기화 - 모든 문제에서 10개 선별
   useEffect(() => {
-    const hardQuestions = subject.questions.filter(q => q.difficulty === 'hard');
-    const mediumQuestions = subject.questions.filter(q => q.difficulty === 'medium');
-    const easyQuestions = subject.questions.filter(q => q.difficulty === 'easy');
-    
-    // 어려운 문제 우선, 부족하면 보통 문제로 채움
-    let selectedQuestions = [...hardQuestions];
-    if (selectedQuestions.length < 10) {
-      selectedQuestions = [...selectedQuestions, ...mediumQuestions.slice(0, 10 - selectedQuestions.length)];
+    if (subject.questions && subject.questions.length > 0) {
+      // 모든 문제를 섞어서 10개 선택 (또는 전체 문제 수가 10개 미만이면 전체)
+      const shuffled = [...subject.questions].sort(() => Math.random() - 0.5);
+      const selectedQuestions = shuffled.slice(0, Math.min(10, shuffled.length));
+      
+      setChallengeQuestions(selectedQuestions);
+      setQuestions(selectedQuestions);
+      setCurrentQuestion(selectedQuestions[0]);
     }
-    if (selectedQuestions.length < 10) {
-      selectedQuestions = [...selectedQuestions, ...easyQuestions.slice(0, 10 - selectedQuestions.length)];
-    }
-    
-    const shuffled = selectedQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
-    setChallengeQuestions(shuffled);
-    setQuestions(shuffled);
-    setCurrentQuestion(shuffled[0]);
   }, [subject]);
 
   // 타이머

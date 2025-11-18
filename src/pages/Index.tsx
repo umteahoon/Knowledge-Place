@@ -3,15 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { subjects, gameModes, gradeLevels, getSubjectsByGrade, getQuestionsByGrade, Subject, GameMode, GradeLevel } from '@/data';
+import { subjects, gameModes, gradeLevels, Subject, GameMode, GradeLevel, getSubjectsByGrade, getQuestionsByGrade } from '@/data';
 import { SpeedQuizGame } from '@/components/games/SpeedQuizGame';
 import { SurvivalGame } from '@/components/games/SurvivalGame';
 import { PracticeGame } from '@/components/games/PracticeGame';
 import { ChallengeGame } from '@/components/games/ChallengeGame';
 import { CheeseHunterGame } from '@/components/games/CheeseHunterGame';
-import { Trophy, Star, Clock, Target, BookOpen, Brain, Gamepad2, LogIn, LogOut, User } from 'lucide-react';
+import { Trophy, Star, Clock, Target, BookOpen, Brain, Gamepad2, ArrowLeft, Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface GameStats {
   totalGamesPlayed: number;
@@ -21,9 +21,8 @@ interface GameStats {
 }
 
 const Index = () => {
-  const navigate = useNavigate();
-  const { user, logout, isAuthenticated } = useAuth();
-  const [selectedGrade, setSelectedGrade] = useState<'elementary' | 'middle' | 'high' | null>(null);
+  const { user, logout } = useAuth();
+  const [selectedGrade, setSelectedGrade] = useState<GradeLevel | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
   const [selectedGameMode, setSelectedGameMode] = useState<GameMode | null>(null);
   const [showCheeseHunter, setShowCheeseHunter] = useState(false);
@@ -49,6 +48,13 @@ const Index = () => {
     localStorage.setItem('educationalGameStats', JSON.stringify(updatedStats));
   };
 
+  // 메인 화면으로 돌아가기
+  const resetToHome = () => {
+    setSelectedGrade(null);
+    setSelectedSubject(null);
+    setSelectedGameMode(null);
+  };
+
   // 게임 종료 후 메인 화면으로 돌아가기
   const handleGameEnd = (results: any) => {
     // 통계 업데이트
@@ -60,34 +66,27 @@ const Index = () => {
     });
 
     // 메인 화면으로 돌아가기
-    setSelectedGrade(null);
-    setSelectedSubject(null);
-    setSelectedGameMode(null);
+    resetToHome();
   };
 
   // 게임 컴포넌트 렌더링
   const renderGame = () => {
-    if (!selectedSubject || !selectedGameMode || !selectedGrade) return null;
+    if (!selectedGrade || !selectedSubject || !selectedGameMode) return null;
 
     // 선택된 학급에 맞는 문제들로 필터링
-    const filteredQuestions = getQuestionsByGrade(selectedSubject.id, selectedGrade);
     const subjectWithFilteredQuestions = {
       ...selectedSubject,
-      questions: filteredQuestions
+      questions: getQuestionsByGrade(selectedSubject, selectedGrade.id)
     };
 
     const gameProps = {
       subject: subjectWithFilteredQuestions,
       onGameEnd: handleGameEnd,
-      onBackToMenu: () => {
-        setSelectedGrade(null);
-        setSelectedSubject(null);
-        setSelectedGameMode(null);
-      }
+      onBackToMenu: resetToHome
     };
 
     switch (selectedGameMode.id) {
-      case 'speed_quiz':
+      case 'speed':
         return <SpeedQuizGame {...gameProps} />;
       case 'survival':
         return <SurvivalGame {...gameProps} />;
@@ -115,8 +114,8 @@ const Index = () => {
       <div className="max-w-7xl mx-auto">
         {/* 헤더 */}
         <div className="flex justify-between items-center mb-8">
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+          <div className="text-center flex-1">
+            <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-3">
               <Brain className="text-indigo-600" size={40} />
               지식 플레이스 - 교육 게임
             </h1>
@@ -125,32 +124,22 @@ const Index = () => {
           
           {/* 사용자 정보 및 로그인/로그아웃 */}
           <div className="flex items-center gap-4">
-            {isAuthenticated ? (
+            {user ? (
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <p className="font-semibold text-gray-800 flex items-center gap-2">
-                    <User size={16} />
-                    {user?.nickname}
-                  </p>
-                  <p className="text-sm text-gray-600">{user?.email}</p>
+                  <p className="text-sm font-medium text-gray-800">{user.nickname}님</p>
+                  <p className="text-xs text-gray-500">환영합니다!</p>
                 </div>
-                <Button 
-                  variant="outline" 
-                  onClick={logout}
-                  className="flex items-center gap-2"
-                >
-                  <LogOut size={16} />
+                <Button variant="outline" size="sm" onClick={logout}>
                   로그아웃
                 </Button>
               </div>
             ) : (
-              <Button 
-                onClick={() => navigate('/auth')}
-                className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700"
-              >
-                <LogIn size={16} />
-                로그인
-              </Button>
+              <Link to="/auth">
+                <Button variant="outline" size="sm">
+                  로그인
+                </Button>
+              </Link>
             )}
           </div>
         </div>
@@ -187,52 +176,24 @@ const Index = () => {
           </Card>
         </div>
 
-        {!selectedGrade ? (
-          // 학급 선택 화면
-          <div>
-            <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
-              학급을 선택하세요
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              {gradeLevels.map((grade) => (
-                <Card 
-                  key={grade.id}
-                  className="cursor-pointer hover:shadow-lg transition-all duration-300 transform hover:scale-105 bg-white/90 backdrop-blur-sm border-2 hover:border-indigo-300"
-                  onClick={() => setSelectedGrade(grade.id)}
-                >
-                  <CardHeader className="text-center pb-2">
-                    <div className="text-4xl mb-2">{grade.icon}</div>
-                    <CardTitle className="text-xl font-bold text-gray-800">{grade.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <CardDescription className="text-gray-600 mb-4">
-                      {grade.description}
-                    </CardDescription>
-                    <Badge className={`${grade.color} text-white px-4 py-1`}>
-                      {grade.name} 과정
-                    </Badge>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
+        {selectedSubject && selectedGameMode ? (
+          // 게임 모드가 선택된 경우 - 실제 게임 실행은 위에서 처리
+          null
         ) : selectedSubject ? (
-          // 게임 모드 선택 화면
+          // 3단계: 게임 모드 선택 화면
           <div>
             <div className="flex items-center gap-4 mb-6">
               <Button 
                 variant="outline" 
-                onClick={() => {
-                  setSelectedSubject(null);
-                  setSelectedGrade(null);
-                }}
+                onClick={() => setSelectedSubject(null)}
                 className="flex items-center gap-2"
               >
-                ← 학급 선택으로
+                <ArrowLeft size={16} />
+                뒤로가기
               </Button>
               <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <span className="text-3xl">{selectedSubject.icon}</span>
-                {selectedSubject.name} 게임 모드 선택
+                {selectedGrade?.name} {selectedSubject.name} - 게임 모드 선택
               </h2>
             </div>
             
@@ -246,24 +207,26 @@ const Index = () => {
                   <CardHeader className="text-center">
                     <div className="text-4xl mb-2">{mode.icon}</div>
                     <CardTitle className="text-lg">{mode.name}</CardTitle>
-                    <Badge 
-                      variant={mode.difficulty === 'easy' ? 'secondary' : mode.difficulty === 'medium' ? 'default' : 'destructive'}
-                      className="mx-auto"
-                    >
-                      {mode.difficulty === 'easy' ? '쉬움' : mode.difficulty === 'medium' ? '보통' : '어려움'}
-                    </Badge>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-center text-sm">
+                    <CardDescription className="text-center text-sm mb-4">
                       {mode.description}
                     </CardDescription>
+                    <div className="space-y-1">
+                      {mode.features.map((feature, index) => (
+                        <div key={index} className="text-xs text-gray-600 flex items-center gap-1">
+                          <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
           </div>
-        ) : (
-          // 교과목 선택 화면
+        ) : selectedGrade ? (
+          // 2단계: 교과목 선택 화면
           <div>
             <div className="flex items-center gap-4 mb-6">
               <Button 
@@ -271,16 +234,13 @@ const Index = () => {
                 onClick={() => setSelectedGrade(null)}
                 className="flex items-center gap-2"
               >
-                ← 학급 선택으로
+                <ArrowLeft size={16} />
+                뒤로가기
               </Button>
-              <div className="flex-1 text-center">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  {gradeLevels.find(g => g.id === selectedGrade)?.name} 교과목 선택
-                </h2>
-                <p className="text-gray-600 mt-1">
-                  {gradeLevels.find(g => g.id === selectedGrade)?.description}
-                </p>
-              </div>
+              <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <span className="text-3xl">{selectedGrade.icon}</span>
+                {selectedGrade.name} - 교과목 선택
+              </h2>
             </div>
             
             {/* 치즈 헌터 게임 카드 */}
@@ -295,7 +255,7 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-center text-white/90 text-base">
-                    백 게임과 한국어 퀴즈를 결합한 재미있는 게임!
+                    뱀 게임과 한국어 퀴즈를 결합한 재미있는 게임!
                     <br />
                     <span className="flex items-center justify-center gap-2 mt-2">
                       <Gamepad2 size={16} />
@@ -307,37 +267,86 @@ const Index = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {getSubjectsByGrade(selectedGrade!).map((subject) => {
-                const gradeQuestions = getQuestionsByGrade(subject.id, selectedGrade!);
+              {getSubjectsByGrade(selectedGrade.id).map((subject) => {
+                const questionsForGrade = getQuestionsByGrade(subject, selectedGrade.id);
                 return (
                   <Card 
                     key={subject.id} 
                     className="hover:shadow-lg transition-all duration-300 cursor-pointer bg-white/80 backdrop-blur-sm hover:scale-105"
                     onClick={() => setSelectedSubject(subject)}
                   >
-                  <CardHeader className="text-center">
-                    <div className="text-5xl mb-3">{subject.icon}</div>
-                    <CardTitle className="text-xl">{subject.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-center mb-4">
-                      {subject.description}
-                    </CardDescription>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm text-gray-600">
-                        <span>{gradeLevels.find(g => g.id === selectedGrade)?.name} 문제</span>
-                        <span>{gradeQuestions.length}개</span>
+                    <CardHeader className="text-center">
+                      <div className="text-5xl mb-3">{subject.icon}</div>
+                      <CardTitle className="text-xl">{subject.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm text-gray-600">
+                          <span>문제 수</span>
+                          <span>{questionsForGrade.length}개</span>
+                        </div>
+                        <Progress 
+                          value={Math.min((questionsForGrade.length / 10) * 100, 100)} 
+                          className="h-2"
+                        />
+                        <div className="text-center">
+                          <Badge variant="secondary" className="text-xs">
+                            {selectedGrade.name} 수준
+                          </Badge>
+                        </div>
                       </div>
-                      <Progress 
-                        value={(gradeQuestions.length / 5) * 100} 
-                        className="h-2"
-                      />
-                      <div className="text-xs text-gray-500 text-center">
-                        {gradeLevels.find(g => g.id === selectedGrade)?.name} 수준의 문제들
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          // 1단계: 학급 선택 화면
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center flex items-center justify-center gap-3">
+              <Users className="text-indigo-600" />
+              학급을 선택하세요
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              {gradeLevels.map((grade) => {
+                const availableSubjects = getSubjectsByGrade(grade.id);
+                const totalQuestions = availableSubjects.reduce((total, subject) => {
+                  return total + getQuestionsByGrade(subject, grade.id).length;
+                }, 0);
+                
+                return (
+                  <Card 
+                    key={grade.id} 
+                    className="hover:shadow-xl transition-all duration-300 cursor-pointer bg-white/90 backdrop-blur-sm hover:scale-105 border-2 hover:border-indigo-300"
+                    onClick={() => setSelectedGrade(grade)}
+                  >
+                    <CardHeader className="text-center pb-4">
+                      <div className="text-6xl mb-4">{grade.icon}</div>
+                      <CardTitle className="text-2xl text-gray-800">{grade.name}</CardTitle>
+                      <CardDescription className="text-base text-gray-600 mt-2">
+                        {grade.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600">교과목</span>
+                          <Badge variant="secondary">{availableSubjects.length}개</Badge>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-gray-600">총 문제</span>
+                          <Badge variant="outline">{totalQuestions}개</Badge>
+                        </div>
+                        <div className="pt-2">
+                          <Button className={`w-full ${grade.color} hover:opacity-90 text-white`}>
+                            {grade.name} 시작하기
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
@@ -345,34 +354,18 @@ const Index = () => {
         )}
 
         {/* 푸터 */}
-        <div className="text-center mt-12 space-y-4">
-          <p className="text-lg text-gray-600">🎓 즐겁게 학습하며 지식을 쌓아가세요! 🎓</p>
-          
-          {/* 필수 링크들 */}
+        <div className="text-center mt-12 text-gray-500">
+          <p className="mb-4">🎓 즐겁게 학습하며 지식을 쌓아가세요! 🎓</p>
           <div className="flex justify-center gap-6 text-sm">
-            <button 
-              onClick={() => navigate('/privacy')}
-              className="text-blue-600 hover:underline"
-            >
+            <Link to="/privacy-policy" className="hover:text-gray-700 transition-colors">
               개인정보처리방침
-            </button>
-            <button 
-              onClick={() => navigate('/terms')}
-              className="text-blue-600 hover:underline"
-            >
+            </Link>
+            <Link to="/terms-of-service" className="hover:text-gray-700 transition-colors">
               이용약관
-            </button>
-            <button 
-              onClick={() => navigate('/about')}
-              className="text-blue-600 hover:underline"
-            >
+            </Link>
+            <Link to="/about" className="hover:text-gray-700 transition-colors">
               About & Contact
-            </button>
-          </div>
-          
-          <div className="text-xs text-gray-400">
-            <p>© 2025 지식 플레이스. All rights reserved.</p>
-            <p className="mt-1">교육을 통해 더 나은 세상을 만들어갑니다.</p>
+            </Link>
           </div>
         </div>
       </div>

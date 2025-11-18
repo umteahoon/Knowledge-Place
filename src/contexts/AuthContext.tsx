@@ -9,9 +9,9 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (email: string, password: string, nickname: string) => Promise<boolean>;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, nickname: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -32,109 +32,106 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  // 로컬 스토리지에서 사용자 정보 로드
+  // 초기 로드 시 로컬 스토리지에서 사용자 정보 확인
   useEffect(() => {
-    const loadUser = () => {
+    const savedUser = localStorage.getItem('educationalGameUser');
+    if (savedUser) {
       try {
-        const savedUser = localStorage.getItem('knowledgeplace_user');
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
-        }
+        setUser(JSON.parse(savedUser));
       } catch (error) {
-        console.error('Failed to load user from localStorage:', error);
-        localStorage.removeItem('knowledgeplace_user');
-      } finally {
-        setIsLoading(false);
+        console.error('Failed to parse saved user data:', error);
+        localStorage.removeItem('educationalGameUser');
       }
-    };
-
-    loadUser();
+    }
+    setLoading(false);
   }, []);
 
   // 로그인 함수
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<void> => {
+    setLoading(true);
+    
     try {
-      // 로컬 스토리지에서 사용자 목록 가져오기
-      const users = JSON.parse(localStorage.getItem('knowledgeplace_users') || '[]');
+      // 실제 구현에서는 서버 API 호출
+      // 여기서는 로컬 스토리지를 사용한 간단한 구현
+      const savedUsers = JSON.parse(localStorage.getItem('educationalGameUsers') || '[]');
+      const existingUser = savedUsers.find((u: any) => u.email === email && u.password === password);
       
-      // 이메일과 비밀번호 확인
-      const foundUser = users.find((u: any) => u.email === email && u.password === password);
-      
-      if (foundUser) {
-        const userInfo: User = {
-          id: foundUser.id,
-          email: foundUser.email,
-          nickname: foundUser.nickname,
-          createdAt: foundUser.createdAt
-        };
-        
-        setUser(userInfo);
-        localStorage.setItem('knowledgeplace_user', JSON.stringify(userInfo));
-        return true;
+      if (!existingUser) {
+        throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
       }
-      
-      return false;
+
+      const userData: User = {
+        id: existingUser.id,
+        email: existingUser.email,
+        nickname: existingUser.nickname,
+        createdAt: existingUser.createdAt
+      };
+
+      setUser(userData);
+      localStorage.setItem('educationalGameUser', JSON.stringify(userData));
     } catch (error) {
-      console.error('Login error:', error);
-      return false;
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   // 회원가입 함수
-  const register = async (email: string, password: string, nickname: string): Promise<boolean> => {
+  const signup = async (email: string, password: string, nickname: string): Promise<void> => {
+    setLoading(true);
+    
     try {
-      // 기존 사용자 목록 가져오기
-      const users = JSON.parse(localStorage.getItem('knowledgeplace_users') || '[]');
+      // 기존 사용자 확인
+      const savedUsers = JSON.parse(localStorage.getItem('educationalGameUsers') || '[]');
+      const existingUser = savedUsers.find((u: any) => u.email === email);
       
-      // 이메일 중복 확인
-      if (users.some((u: any) => u.email === email)) {
-        return false;
+      if (existingUser) {
+        throw new Error('이미 등록된 이메일입니다.');
       }
-      
+
       // 새 사용자 생성
       const newUser = {
         id: Date.now().toString(),
         email,
-        password, // 실제 서비스에서는 해시화 필요
+        password, // 실제 구현에서는 해시화 필요
         nickname,
         createdAt: new Date().toISOString()
       };
-      
+
       // 사용자 목록에 추가
-      users.push(newUser);
-      localStorage.setItem('knowledgeplace_users', JSON.stringify(users));
-      
-      // 로그인 처리
-      const userInfo: User = {
+      savedUsers.push(newUser);
+      localStorage.setItem('educationalGameUsers', JSON.stringify(savedUsers));
+
+      // 현재 사용자로 설정
+      const userData: User = {
         id: newUser.id,
         email: newUser.email,
         nickname: newUser.nickname,
         createdAt: newUser.createdAt
       };
-      
-      setUser(userInfo);
-      localStorage.setItem('knowledgeplace_user', JSON.stringify(userInfo));
-      
-      return true;
+
+      setUser(userData);
+      localStorage.setItem('educationalGameUser', JSON.stringify(userData));
     } catch (error) {
-      console.error('Register error:', error);
-      return false;
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   // 로그아웃 함수
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('knowledgeplace_user');
+    localStorage.removeItem('educationalGameUser');
   };
 
   const value: AuthContextType = {
     user,
-    isLoading,
+    loading,
     login,
-    register,
+    signup,
     logout,
     isAuthenticated: !!user
   };
