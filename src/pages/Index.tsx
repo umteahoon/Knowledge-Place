@@ -116,7 +116,11 @@ const Index = () => {
         <div className="flex justify-between items-center mb-8">
           <div className="text-center flex-1">
             <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-3">
-              <Brain className="text-indigo-600" size={40} />
+              <img 
+                src="./images/logo.jpg" 
+                alt="지식 플레이스 로고" 
+                className="h-10 w-10 object-contain rounded"
+              />
               지식 플레이스 - 교육 게임
             </h1>
             <p className="text-lg text-gray-600">재미있는 게임으로 학습하는 스마트 교육 플랫폼</p>
