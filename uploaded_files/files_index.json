@@ -1,0 +1,25 @@
+{
+  "documents": [],
+  "tables_parsed": [],
+  "tables_source_info": [],
+  "images": [
+    {
+      "original_name": "스크린샷 2025-11-25 142240",
+      "file_name": "스크린샷 2025-11-25 142240.png",
+      "file_path": "/workspace/educational_quiz_games/public/images/스크린샷 2025-11-25 142240.png",
+      "rel_path": "images/스크린샷 2025-11-25 142240.png",
+      "file_type": "png",
+      "category": "images"
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "by_category": {
+      "documents": 0,
+      "tables_parsed": 0,
+      "tables_source_info": 0,
+      "images": 1
+    },
+    "processing_time": null
+  }
+}
