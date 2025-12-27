@@ -1,0 +1,41 @@
+{
+  "name": "지식 플레이스 - 교육 게임",
+  "short_name": "지식플레이스",
+  "description": "재미있는 게임으로 학습하는 스마트 교육 플랫폼",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ko",
+  "categories": ["education", "games", "productivity"],
+  "icons": [
+    {
+      "src": "/images/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "치즈 헌터",
+      "short_name": "치즈헌터",
+      "description": "뱀 게임과 퀴즈를 결합한 게임",
+      "url": "/?game=cheese-hunter"
+    },
+    {
+      "name": "지식 카드 뒤집기",
+      "short_name": "카드뒤집기",
+      "description": "메모리 매칭 게임",
+      "url": "/?game=memory-match"
+    }
+  ]
+}
